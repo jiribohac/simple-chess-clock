@@ -11,6 +11,7 @@
   <string name="pref_dialog_title_enter_time">Enter Time</string>
   <string name="pref_dialog_title_delay_type">Select Time Delay</string>
   <string name="pref_dialog_title_time_units">Select Time Units</string>
+  <string name="pref_dialog_title_tilt_angle">Set Tilt Angle Threshold</string>
   <string name="pref_summary_alert_ringtone">Set the ringtone to be played when time expires.</string>
   <string name="pref_summary_delay_length">Set the amount of time used for time delays.</string>
   <string name="pref_summary_delay_type">Set the time delay scheme to use during play.</string>
@@ -22,6 +23,7 @@
   <string name="pref_summary_starting_time_2">Set how much time Player 2 starts with.</string>
   <string name="pref_summary_starting_time_units">Set units in which to specify game time.</string>
   <string name="pref_summary_different_starting_time">Use a different game time for each player.</string>
+  <string name="pref_summary_tilt_angle">Set device tilt angle threshold to switch players.</string>
   <string name="pref_title_about">About Simple Chess Clock</string>
   <string name="pref_title_alert_ringtone">Alert Ringtone</string>
   <string name="pref_title_delay_length">Delay Length</string>
@@ -33,6 +35,7 @@
   <string name="pref_title_starting_time">Game Time</string>
   <string name="pref_title_starting_time_2">Game Time (Player 2)</string>
   <string name="pref_title_starting_time_units">Game Time Units</string>
+  <string name="pref_title_tilt_angle">Tilt angle threshold</string>
   <string name="pref_title_different_starting_time">Different Game Time</string>
   <string-array name="delay_types">
     <item>None</item>
@@ -53,5 +56,31 @@
       <item>Seconds</item>
       <item>Minutes</item>
       <item>Hours</item>
+  </string-array>
+  <string-array name="tilt_angles">
+      <item>Disabled</item>
+      <item>3°</item>
+      <item>6°</item>
+      <item>9°</item>
+      <item>12°</item>
+      <item>15°</item>
+      <item>18°</item>
+      <item>21°</item>
+      <item>24°</item>
+      <item>27°</item>
+      <item>30°</item>
+  </string-array>
+  <string-array name="tilt_angle_vals" translatable="false">
+      <item>100</item>
+      <item>0.512</item>
+      <item>1.024</item>
+      <item>1.533</item>
+      <item>2.037</item>
+      <item>2.536</item>
+      <item>3.028</item>
+      <item>3.512</item>
+      <item>3.986</item>
+      <item>4.449</item>
+      <item>4.899</item>
   </string-array>
 </resources>

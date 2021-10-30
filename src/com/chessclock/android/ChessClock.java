@@ -56,10 +56,14 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 
 import java.lang.Math;
 
-public class ChessClock extends Activity {
+public class ChessClock extends Activity implements SensorEventListener {
 	
 	/**-----------------------------------
 	 *            CONSTANTS
@@ -125,6 +129,14 @@ public class ChessClock extends Activity {
 	private boolean delayed = false;
     private boolean showDeciseconds = true;
 
+	/* accelerometer */
+	private SensorManager sensorManager;
+    private Sensor accelerometer = null;
+	private int last_direction = 0;
+    private static String TILT_DISABLED = "100";
+    private String initTiltAngle = TILT_DISABLED;
+	private float tiltAngleThreshold;
+
     /** Provide haptic feedback to the user of the given view. */
     private void performHapticFeedback(View v) {
         v.performHapticFeedback(
@@ -155,7 +167,7 @@ public class ChessClock extends Activity {
         pm = (PowerManager) getSystemService(ChessClock.POWER_SERVICE);  
         wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "ChessWakeLock");
         
-        setContentView(R.layout.main);
+		setContentView(R.layout.main);
         
         setUpGame(true);
     }
@@ -172,6 +184,9 @@ public class ChessClock extends Activity {
 	    	}
     	}
     	
+        if (accelerometer != null)
+			sensorManager.unregisterListener(this);
+
     	PauseGame();
     	super.onPause();
     }
@@ -186,6 +201,10 @@ public class ChessClock extends Activity {
 	    		ringtone.stop();
 	    	}
 	    }
+		
+		if (accelerometer != null)
+			sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+
 	    super.onResume();
     }
     
@@ -201,6 +220,33 @@ public class ChessClock extends Activity {
 	    	}
     	}
     	super.onDestroy();
+    }
+
+	@Override
+    public void onSensorChanged(SensorEvent event) {
+		float y = event.values[1];
+		int direction = 0;
+
+		if (y > tiltAngleThreshold) {
+			direction = 1;
+		}
+		else if (y < -tiltAngleThreshold) {
+			direction = -1;
+		}
+
+		if (last_direction != direction) {
+			last_direction = direction;
+			if (direction == 1) {
+				P2Click();
+			}
+			else if (direction == -1) {
+				P1Click();
+			}
+		}
+	}
+
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 
     /** Return the init time for a player based on the preferences. */
@@ -411,6 +457,10 @@ public class ChessClock extends Activity {
         if (prefs.getBoolean("prefShowDeciseconds", true) != showDeciseconds) {
             setUpGame(false);
         }
+        
+		if (!prefs.getString("prefTiltAngle", TILT_DISABLED).equals(initTiltAngle)) {
+            setUpGame(false);
+        };
     }
 	
 	/** Creates and displays the "Reset Clocks" alert dialog */
@@ -778,5 +828,23 @@ public class ChessClock extends Activity {
         // Format and display the clocks
         setClock(p1, t_P1, (savedOTC == 1) ? b_delay : 0);
         setClock(p2, t_P2, (savedOTC == 2) ? b_delay : 0);
+		
+		/** initialize the accelerometer */
+		if (accelerometer != null) {
+			sensorManager.unregisterListener(this);
+		}
+		accelerometer = null;
+
+		initTiltAngle = prefs.getString("prefTiltAngle", TILT_DISABLED);
+		tiltAngleThreshold = Float.parseFloat(initTiltAngle);
+
+		if (tiltAngleThreshold < 10) {
+			sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+			if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+				accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+				sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+			}
+		}
 	}
+		
 }

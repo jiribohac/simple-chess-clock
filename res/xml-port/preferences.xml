@@ -111,6 +111,17 @@
         android:summary="@string/pref_summary_black_background"
         android:key="prefBlackBackground">
     </CheckBoxPreference>
+    <ListPreference
+        android:entries="@array/tilt_angles"
+        android:dialogTitle="@string/pref_dialog_title_tilt_angle"
+        android:entryValues="@array/tilt_angle_vals"
+        android:selectable="true"
+        android:summary="@string/pref_summary_tilt_angle"
+        android:enabled="true"
+        android:title="@string/pref_title_tilt_angle"
+        android:key="prefTiltAngle"
+        android:defaultValue="100">
+    </ListPreference>
   </PreferenceCategory>
   <PreferenceCategory
       android:title="@string/pref_category_about">
